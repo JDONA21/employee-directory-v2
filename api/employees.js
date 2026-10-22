@@ -2,11 +2,25 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { getEmployee, getEmployees, getRandomEmployee } from "#db/employees";
+import {
+  getEmployee,
+  getEmployees,
+  getRandomEmployee,
+  createEmployee,
+} from "#db/employees";
 
 router.get("/", (req, res) => {
   const employees = getEmployees();
   res.send(employees);
+});
+
+router.post("/", (req, res) => {
+  if (!req.body) return res.status(400).send("Your request must have a body.");
+  const { name } = req.body;
+  if (!name) return res.status(400).send("Your request body must have a name.");
+
+  const employee = createEmployee(name);
+  res.status(201).send(employee);
 });
 
 // Note: this middleware has to come first! Otherwise, Express will treat
